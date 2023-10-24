@@ -1,0 +1,44 @@
+.banner{
+    background-color: lightcoral;
+    color: black;
+    margin-top: 50px;
+    text-align: center;
+    padding: 100px 0px;
+    height: 100px;
+}
+
+.nav-li{
+    background-color: gray;
+    display: inline-table;
+    padding: 0px 20px;
+}
+
+.floatLeft{
+    width: 100%;
+    float: left;
+}
+.floatRight{
+    width: 100%;
+    float: right;
+}
+.container{
+    overflow: hidden;
+}
+.row{
+    display: inline-block;
+}
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 35px;
+}
+#add-header {
+    text-align: center;
+}

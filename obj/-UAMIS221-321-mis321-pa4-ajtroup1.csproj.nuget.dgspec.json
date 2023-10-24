@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\epicn\\Desktop\\CLASSES\\MIS321\\PAs\\-UAMIS221-321-mis321-pa4-ajtroup1\\-UAMIS221-321-mis321-pa4-ajtroup1.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\epicn\\Desktop\\CLASSES\\MIS321\\PAs\\-UAMIS221-321-mis321-pa4-ajtroup1\\-UAMIS221-321-mis321-pa4-ajtroup1.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\epicn\\Desktop\\CLASSES\\MIS321\\PAs\\-UAMIS221-321-mis321-pa4-ajtroup1\\-UAMIS221-321-mis321-pa4-ajtroup1.csproj",
+        "projectName": "-UAMIS221-321-mis321-pa4-ajtroup1",
+        "projectPath": "C:\\Users\\epicn\\Desktop\\CLASSES\\MIS321\\PAs\\-UAMIS221-321-mis321-pa4-ajtroup1\\-UAMIS221-321-mis321-pa4-ajtroup1.csproj",
+        "packagesPath": "C:\\Users\\epicn\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\epicn\\Desktop\\CLASSES\\MIS321\\PAs\\-UAMIS221-321-mis321-pa4-ajtroup1\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\epicn\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
