@@ -1,23 +1,11 @@
 let myWorkouts = []
-
-// test workout variables
-// let workout1 = {Date: '2020-04-12', Workout: "Jog", Distance: "3 miles", ID: "0a3e868c-6419-4fbb-9ad2-f744657877b2", Pin: false}
-// let workout2 = {Date: '2021-04-12', Workout: "Run", Distance: "2 miles", ID: "6398961a-7a0f-4481-a7b3-cbb5ab57069a", Pin: false}
-// let workout3 = {Date: '2019-04-12', Workout: "Sprints", Distance: "1 mile", ID: "17b8a11f-702b-400a-a86a-621555756e62", Pin: false}
-// myWorkouts.push(workout1)
-// myWorkouts.push(workout2)
-// myWorkouts.push(workout3)
-// localStorage.setItem('myWorkouts', JSON.stringify(myWorkouts))
-
 //ONLOAD
 
 
 
-function handleOnLoad() {
-    myWorkouts = JSON.parse(localStorage.getItem('myWorkouts'))
-    // let tempUUID = uuidv4()
-    // console.log(tempUUID)
-    // start list table
+async function handleOnLoad() {
+    await populateArray()
+    populateTable();
 
     //start add table
 
@@ -46,13 +34,17 @@ function handleOnLoad() {
     </form> 
     `
     
-    localStorage.setItem('myWorkouts', JSON.stringify(myWorkouts))
     document.getElementById('app').innerHTML=html
-    populateTable()
+
 }
 
 //Update
-function populateTable() {
+async function populateArray(){
+    let response = await fetch('http://localhost:5028/api/Workout')
+    myWorkouts = await response.json()
+}
+async function populateTable() {
+    console.log(myWorkouts)
     sortDates()
     let html=` 
     <table class = "table" border=1>
@@ -64,80 +56,133 @@ function populateTable() {
                     <th>Pin</th>
                     <th>Delete</th>
                 </tr>
-            </thead>`;
+            </thead>`
     myWorkouts.forEach(function(workout) {
+        if(workout.deleted==false){
         html += `
         <tr>
-            <td>${workout.Date}</td>
-            <td>${workout.Workout}</td>
-            <td>${workout.Distance}</td>
+            <td>${workout.date}</td>
+            <td>${workout.name}</td>
+            <td>${workout.distance}</td>
             `
-        if(workout.Pin==true){
+        if(workout.pinned==true){
             html+=`
-            <td><button name="pin" onclick="handlePin('${workout.ID}')">Unpin</button></td>
+            <td><button name="pin" onclick="handlePin('${workout.id}')">Unpin</button></td>
             `
         }
         else {
             html+=`
-            <td><button name="pin" onclick="handlePin('${workout.ID}')">Pin</button></td>
+            <td><button name="pin" onclick="handlePin('${workout.id}')">Pin</button></td>
             `
         }
         html+=`
-            <td><button onclick="handleDeleteWorkout('${workout.ID}')" class="btn btn-danger">Delete</button></td>
+            <td><button onclick="handleDeleteWorkout('${workout.id}')" class="btn btn-danger">Delete</button></td>
         </tr>
         `
+    }
+    else{
+        //do nothing
+    }
     })
     html+=`</table>`; //end list table
-    document.getElementById('tableBody').innerHTML=html
+    document.getElementById('listTable').innerHTML=html
 }
 function sortDates() { // YYYYY-MM-DD format
     myWorkouts.sort(function(a, b) {
-        return new Date(b.Date) - new Date(a.Date);
+        return new Date(b.date) - new Date(a.date);
     });
 }
 
 
 //Workout instance manipulation
-function handleAddWorkout() {
-    //testing
-    // console.log("button pressed")
-    // console.log(document.getElementById('date').value)
-    // console.log(document.getElementById('workout').value)
-    // console.log(document.getElementById('distance').value)
+async function handleAddWorkout() {
+    let workoutDate = new Date(document.getElementById('date').value)
+    let workoutName = document.getElementById('workout').value
+    let workoutDistance = document.getElementById('distance').value
+    let workoutID= 0
+    let Wpinned = false
+    let Wdeleted = false
+    // console.log("temp obj", workoutT)
+    const response = await fetch('http://localhost:5028/api/Workout', {
+        method: 'POST',
+        body: JSON.stringify({
+            date: workoutDate,
+            distance: workoutDistance,
+            name: workoutName,
+        }),
+        headers: {
 
-    let uuidT = uuidv4()
-    let workoutT = {Date: document.getElementById('date').value, Workout: document.getElementById('workout').value, Distance: document.getElementById('distance').value, ID: uuidT, Pin: false}
-    myWorkouts.push(workoutT)
-    //console.log(workoutT) testing
-    populateTable()
-    localStorage.setItem('myWorkouts', JSON.stringify(myWorkouts))
-    document.getElementById('date').value = ''
-    document.getElementById('workout').value = ''
-    document.getElementById('distance').value = ''
-}
-function handleDeleteWorkout(uuid) {
-    //console.log("delete ran", date) //test
-    myWorkouts=myWorkouts.filter(workout => workout.ID != uuid)
-    localStorage.setItem('myWorkouts', JSON.stringify(myWorkouts))
-    populateTable()
-}
-function handlePin(uuid) {
-    // console.log("edit function ran")
-    myWorkouts.forEach(function(workout) {
-        if(workout.ID == uuid)
-            workout.Pin = !workout.Pin
+            'Content-Type': 'application/json; charset=UTF-8'
+        }
     })
-    localStorage.setItem('myWorkouts', JSON.stringify(myWorkouts))
+    
+    if (response.status === 200) {
+        // POST request was successful
+        document.getElementById('date').value = '';
+        document.getElementById('workout').value = '';
+        document.getElementById('distance').value = '';
+        populateTable();
+    } else {
+        // Handle error in case the POST request fails
+        console.error('Failed to add workout:', response.statusText);
+    }
+    
+}
+async function handleDeleteWorkout(id) {
+    myWorkouts.forEach(function(workout) {
+        if(workout.id == id)
+            workout.deleted = !workout.deleted
+    });
+
+    const response = await fetch(`http://localhost:5028/api/Workout/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            deleted: true
+        }),
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        }
+    });
+
+    if (response.status === 200) {
+        // Successfully updated
+        populateTable();
+    } else {
+        // Handle error in case the PUT request fails
+        console.error('Failed to soft delete workout:', response.statusText);
+    }
     populateTable()
 }
 
-
-//UUIDs
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    .replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0, 
-            v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
+async function handlePin(id) {
+    // Toggle the pinned status in the client-side array
+    myWorkouts.forEach(function(workout) {
+        if (workout.id == id)
+            workout.pinned = !workout.pinned;
     });
+    
+    // Get the new pinned status
+    const newPinnedStatus = myWorkouts.find(workout => workout.id == id).pinned;
+    
+    // Update the pinned status on the server
+    await updatePinStatus(id, newPinnedStatus);
+}
+async function updatePinStatus(id, pinned) {
+    const response = await fetch(`http://localhost:5028/api/Workout/pinned/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            pinned: pinned
+        }),
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        }
+    });
+
+    if (response.status === 200) {
+        // Successfully updated
+        populateTable();
+    } else {
+        // Handle error in case the PUT request fails
+        console.error('Failed to update pin status:', response.statusText)
+    }
 }

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\-UAMIS221-321-mis321-pa4-ajtroup1.props" />
+</Project>
